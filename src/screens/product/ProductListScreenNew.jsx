@@ -3,10 +3,11 @@ import { Container, ContentStylings, Section } from "../../styles/styles";
 import Breadcrumb from "../../components/common/Breadcrumb";
 import { Link } from "react-router-dom";
 import ProductList from "../../components/product/ProductList";
-import { products } from "../../data/data";
 import Title from "../../components/common/Title";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
 import ProductFilter from "../../components/product/ProductFilter";
+import { useEffect, useState } from "react"; // add this line
+import { useSelector } from "react-redux"; // add this line
 
 const ProductsContent = styled.div`
   grid-template-columns: 320px auto;
@@ -91,6 +92,34 @@ const ProductListScreen = () => {
     { label: "Home", link: "/" },
     { label: "Products", link: "" },
   ];
+  const [apiProducts, setApiProducts] = useState(null); // add this line
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const token = useSelector((state) => state.auth.token);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetch("http://localhost:3000/api/products", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Network response was not ok");
+          return res.json(); // parse JSON here
+        })
+        .then((data) => {
+          console.log(data); // this is your products array
+          setApiProducts(data); // set array to state
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [isAuthenticated, token]);
+
   return (
     <main className="page-py-spacing">
       <Container>
@@ -104,18 +133,18 @@ const ProductListScreen = () => {
               <h4 className="text-xxl">Women&apos;s Clothing</h4>
               <ul className="products-right-nav flex items-center justify-end flex-wrap">
                 <li>
-                  <Link className="active text-lg font-semibold">
-                    New
-                  </Link>
+                  <Link className="active text-lg font-semibold">New</Link>
                 </li>
                 <li>
-                  <Link className="text-lg font-semibold">
-                    Recommended
-                  </Link>
+                  <Link className="text-lg font-semibold">Recommended</Link>
                 </li>
               </ul>
             </div>
-            <ProductList products={products.slice(0, 12)} />
+            <ProductList
+              products={
+                apiProducts && apiProducts.slice(0, 12)
+              }
+            />
           </ProductsContentRight>
         </ProductsContent>
       </Container>
@@ -137,8 +166,8 @@ const ProductListScreen = () => {
                 veritatis eligendi voluptatem!
               </p>
               <h4>
-                One-stop Destination to Shop Every Clothing for Everyone:
-                Ropero de Patty.
+                One-stop Destination to Shop Every Clothing for Everyone: Ropero
+                de Patty.
               </h4>
               <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo

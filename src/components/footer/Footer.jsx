@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Container } from "../../styles/styles";
 import { footerData, socialLinksData } from "../../data/data";
 import { Link } from "react-router-dom";
-import { staticImages } from "../../utils/images";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
 
 const FooterWrapper = styled.footer`
@@ -167,28 +166,6 @@ const Footer = () => {
               );
             })}
           </div>
-          <div className="ftr-app-links">
-            <p className="app-links-title text-white text-xl font-semibold text-lg">
-              Donwload the App
-            </p>
-            <div className="app-links-group flex items-center">
-              <Link to="/">
-                <img src={staticImages.google_play} />
-              </Link>
-              <Link to="/">
-                <img src={staticImages.app_store} alt="" />
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom text-center">
-          <p className="text-base text-white">
-            Copyright &copy; 2023 &nbsp;
-            <Link to="/" className="text-white">
-              Achats site
-            </Link>
-            &nbsp;. All rights reserved.
-          </p>
         </div>
       </Container>
     </FooterWrapper>

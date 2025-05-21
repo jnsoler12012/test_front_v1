@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { orderData } from "../../data/data";
 import { currencyFormat } from "../../utils/helper";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
+import { useSelector } from "react-redux";
 
 const CheckoutSummaryWrapper = styled.div`
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.05),
@@ -73,15 +73,32 @@ const CheckoutSummaryWrapper = styled.div`
     }
   }
 `;
-
 const CheckoutSummary = () => {
+  const cartItems = useSelector((state) => state.cart.items);
+  const summaryItems = cartItems?.length ? cartItems : [];
+
+  // ✅ Calculate totals
+  const totalQuantity = summaryItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+  const subtotal = summaryItems.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
+
+  // ✅ Fixed values (can also be calculated)
+  const savings = 30;
+  const shipping = 5;
+  const total = subtotal - savings + shipping;
+
   return (
     <CheckoutSummaryWrapper>
       <h4 className="text-xxl font-bold text-outersapce">
         Checkout Order Summary
       </h4>
       <div className="order-list grid">
-        {orderData[0]?.items?.map((order) => {
+        {summaryItems?.map((order) => {
           return (
             <div className="order-item grid" key={order.id}>
               <div className="order-item-img">
@@ -111,25 +128,37 @@ const CheckoutSummary = () => {
         })}
       </div>
 
+      {/* Original order summary (unchanged) */}
       <ul className="order-info">
         <li className="flex items-center justify-between">
           <span className="text-outerspace font-bold text-lg">
-            Subtotal <span className="text-gray font-semibold">(3 items)</span>
+            Subtotal{" "}
+            <span className="text-gray font-semibold">
+              ({totalQuantity} {totalQuantity === 1 ? "item" : "items"})
+            </span>
           </span>
-          <span className="text-outerspace font-bold text-lg">$513.00</span>
+          <span className="text-outerspace font-bold text-lg">
+            {currencyFormat(subtotal)}
+          </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-outerspace font-bold text-lg">Savings</span>
-          <span className="text-outerspace font-bold text-lg">-$30.00</span>
+          <span className="text-outerspace font-bold text-lg">
+            -{currencyFormat(savings)}
+          </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-outerspace font-bold text-lg">Shipping</span>
-          <span className="text-outerspace font-bold text-lg">-$5.00</span>
+          <span className="text-outerspace font-bold text-lg">
+            {currencyFormat(shipping)}
+          </span>
         </li>
         <li className="list-separator"></li>
         <li className="flex items-center justify-between">
           <span className="text-outerspace font-bold text-lg">Total</span>
-          <span className="text-outerspace font-bold text-lg">$478.00</span>
+          <span className="text-outerspace font-bold text-lg">
+            {currencyFormat(total)}
+          </span>
         </li>
       </ul>
     </CheckoutSummaryWrapper>

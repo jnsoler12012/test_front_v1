@@ -2,10 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Title from "../common/Title";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
 
 const NavMenuWrapper = styled.nav`
   margin-top: 32px;
-  
+
   .nav-menu-list {
     row-gap: 8px;
 
@@ -65,6 +67,8 @@ const NavMenuWrapper = styled.nav`
 
 const UserMenu = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+
   return (
     <div>
       <Title titleText={"Hello Richard"} />
@@ -127,14 +131,22 @@ const UserMenu = () => {
             </Link>
           </li>
           <li className="nav-menu-item">
-            <Link to="/" className={`nav-menu-link flex items-center`}>
+            <div to="/" className={`nav-menu-link flex items-center`}>
               <span className="nav-link-icon flex items-center justify-center">
                 <img src="./assets/icons/ac_sign_out.svg" alt="" />
               </span>
-              <span className="text-base font-semibold nav-link-text no-wrap">
-                Sign out
-              </span>
-            </Link>
+              <button
+                onClick={() => {
+                  console.log("asdasdasdasd");
+
+                  dispatch(logout());
+                }}
+              >
+                <span className="text-base font-semibold nav-link-text no-wrap">
+                  Sign out
+                </span>
+              </button>
+            </div>
           </li>
         </ul>
       </NavMenuWrapper>

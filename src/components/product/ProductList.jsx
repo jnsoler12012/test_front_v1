@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { products } from "../../data/data";
 import ProductItem from "./ProductItem";
 import { PropTypes } from "prop-types";
 import { breakpoints } from "../../styles/themes/default";
@@ -15,7 +14,7 @@ const ProductListWrapper = styled.div`
   }
 `;
 
-const ProductList = () => {
+const ProductList = ({products}) => {
   return (
     <ProductListWrapper className="grid">
       {products?.map((product) => {

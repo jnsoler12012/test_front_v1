@@ -13,7 +13,7 @@ const PasswordToggleButton = styled.button`
   }
 `;
 
-const PasswordInput = ({ fieldName, name, errorMsg = "" }) => {
+const PasswordInput = ({ fieldName, name, errorMsg = "", onChange }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = () => {
@@ -31,6 +31,7 @@ const PasswordInput = ({ fieldName, name, errorMsg = "" }) => {
           placeholder=""
           name={name}
           className="form-elem-control"
+          onChange={onChange}
         />
 
         <PasswordToggleButton
@@ -62,4 +63,5 @@ PasswordInput.propTypes = {
   fieldName: PropTypes.string,
   name: PropTypes.string,
   errorMsg: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
 };

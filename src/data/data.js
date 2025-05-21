@@ -4,12 +4,12 @@ const navMenuData = [
   {
     id: "nav-menu-1",
     menuLink: "/",
-    menuText: "Shop",
+    menuText: "",
   },
   {
     id: "nav-menu-2",
     menuLink: "/",
-    menuText: "Men",
+    menuText: "Shop",
   },
   {
     id: "nav-menu-3",
@@ -420,32 +420,25 @@ const footerData = [
   },
   {
     id: "f_company",
-    title: "Company",
+    title: "",
     links: [
-      { text: "About Us", url: "/contact" },
-      { text: "Achats Blog", url: "/blog" },
-      { text: "Achatsian", url: "/achatsian" },
-      { text: "Collaboration", url: "/collaboration" },
-      { text: "Media", url: "/media" },
+      
     ],
   },
   {
     id: "f_more_info",
-    title: "More info",
+    title: "",
     links: [
-      { text: "Terms and conditions", url: "/tac" },
-      { text: "Privacy Policy", url: "/privacy" },
-      { text: "Shipping Policy", url: "/shipping" },
-      { text: "Sitemap", url: "/sitemap" },
+      
     ],
   },
   {
     id: "f_location",
     title: "Location",
     lists: [
-      { text: "Tsupport@euphoria.in" },
-      { text: "Highland Strett, A04 Street 4014" },
-      { text: "New York City, USA" },
+      { text: "contact@roperodepatty" },
+      { text: "Colombia" },
+      { text: "Colombia" },
       { text: "Phone: +000 999 8888" },
     ],
   },
@@ -817,13 +810,7 @@ const socialLinksData = [
     site_name: "twitter",
     site_icon: "bi bi-twitter",
     site_url: "www.twitter.com",
-  },
-  {
-    id: "social_link_4",
-    site_name: "linkedin",
-    site_icon: "bi bi-linkedin",
-    site_url: "www.linkedin.com",
-  },
+  }
 ];
 
 export {

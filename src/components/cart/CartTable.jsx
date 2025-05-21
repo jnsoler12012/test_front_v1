@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import CartItem from "./CartItem";
-import { PropTypes } from "prop-types";
 import { breakpoints } from "../../styles/themes/default";
+
+// Redux imports
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuantity, removeItem } from "../../redux/slices/cartSlice"; // Adjust path
 
 const ScrollbarXWrapper = styled.div`
   overflow-x: scroll;
@@ -57,7 +60,24 @@ const CartTableWrapper = styled.table`
   }
 `;
 
-const CartTable = ({ cartItems }) => {
+const CartTable = () => {
+  const dispatch = useDispatch();
+
+  // Read cartItems from Redux store
+  const cartItems = useSelector((state) => state.cart.items);
+
+  console.log(cartItems);
+  
+
+  const handleQuantityChange = (id, newQuantity) => {
+    if (newQuantity < 1) return; // optional: no zero or negative qty
+    dispatch(updateQuantity({ id, quantity: newQuantity }));
+  };
+
+  const handleRemoveItem = (id) => {
+    dispatch(removeItem(id));
+  };
+
   const CART_TABLE_HEADS = [
     "Product details",
     "Price",
@@ -85,9 +105,22 @@ const CartTable = ({ cartItems }) => {
           </tr>
         </thead>
         <tbody>
-          {cartItems.map((cartItem) => {
-            return <CartItem key={cartItem.id} cartItem={cartItem} />;
-          })}
+          {cartItems && cartItems.length > 0 ? (
+            cartItems.map((cartItem) => (
+              <CartItem
+                key={cartItem.id}
+                cartItem={cartItem}
+                onQuantityChange={handleQuantityChange}
+                onRemove={handleRemoveItem}
+              />
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                Your cart is empty.
+              </td>
+            </tr>
+          )}
         </tbody>
       </CartTableWrapper>
     </ScrollbarXWrapper>
@@ -95,7 +128,3 @@ const CartTable = ({ cartItems }) => {
 };
 
 export default CartTable;
-
-CartTable.propTypes = {
-  cartItems: PropTypes.array,
-};

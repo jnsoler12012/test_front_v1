@@ -5,9 +5,12 @@ import { staticImages } from "../../utils/images";
 import AuthOptions from "../../components/auth/AuthOptions";
 import { FormElement, Input } from "../../styles/form";
 import PasswordInput from "../../components/auth/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BaseButtonBlack } from "../../styles/button";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { loginSuccess } from "../../redux/slices/authSlice";
 
 const SignInScreenWrapper = styled.section`
   .form-separator {
@@ -40,9 +43,41 @@ const SignInScreenWrapper = styled.section`
 `;
 
 const SignInScreen = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "" });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    console.log("entramos", form);
+
+    e.preventDefault();
+    // Simulate or use real API call
+    const response = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: form.username,
+        password: form.password,
+      }),
+    });
+
+    console.log(response);
+
+    const data = await response.json();
+    if (response.ok && data.token) {
+      dispatch(loginSuccess({ token: data.token }));
+      navigate("/"); // or /account, etc.
+    } else {
+      alert("Login failed.");
+    }
+  };
   return (
     <SignInScreenWrapper>
-      <FormGridWrapper>
+      <FormGridWrapper onSubmit={handleSubmit}>
         <Container>
           <div className="form-grid-content">
             <div className="form-grid-left">
@@ -69,11 +104,17 @@ const SignInScreen = () => {
                   <Input
                     type="text"
                     placeholder=""
-                    name=""
+                    name="username"
                     className="form-elem-control"
+                    onChange={handleChange}
+                    required
                   />
                 </FormElement>
-                <PasswordInput fieldName="Password" name="password" />
+                <PasswordInput
+                  onChange={handleChange}
+                  fieldName="Password"
+                  name="password"
+                />
                 <Link
                   to="/reset"
                   className="form-elem-text text-end font-medium"

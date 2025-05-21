@@ -13,6 +13,7 @@ import CheckMail from "./screens/auth/CheckMailScreen";
 import Verification from "./screens/auth/VerificationScreen";
 import NotFound from "./screens/error/NotFoundScreen";
 import ProductList from "./screens/product/ProductListScreen";
+import ProductListNew from "./screens/product/ProductListScreenNew";
 import ProductDetails from "./screens/product/ProductDetailsScreen";
 import Cart from "./screens/cart/CartScreen";
 import CartEmpty from "./screens/cart/CartEmptyScreen";
@@ -24,6 +25,7 @@ import WishListEmpty from "./screens/user/WishListEmptyScreen";
 import Confirm from "./screens/user/ConfirmScreen";
 import Account from "./screens/user/AccountScreen";
 import Address from "./screens/user/AddressScreen";
+import ProtectedRoute from "./screens/auth/ProtectedRoute";
 
 function App() {
   return (
@@ -35,17 +37,85 @@ function App() {
           <Route path="/" element={<BaseLayout />}>
             <Route index element={<Home />} />
             <Route path="/product" element={<ProductList />} />
+
             <Route path="/product/details" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/empty_cart" element={<CartEmpty />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order" element={<Order />} />
-            <Route path="/order_detail" element={<OrderDetail />} />
-            <Route path="/wishlist" element={<WishList />} />
-            <Route path="/empty_wishlist" element={<WishListEmpty />} />
-            <Route path="/confirm" element={<Confirm />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/account/add" element={<Address />} />
+
+            {/* Protected Routes */}
+            <Route
+              path="/productsNew"
+              element={
+                <ProtectedRoute>
+                  <ProductListNew />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order"
+              element={
+                <ProtectedRoute>
+                  <Order />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order_detail"
+              element={
+                <ProtectedRoute>
+                  <OrderDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/wishlist"
+              element={
+                <ProtectedRoute>
+                  <WishList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/empty_wishlist"
+              element={
+                <ProtectedRoute>
+                  <WishListEmpty />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/confirm"
+              element={
+                <ProtectedRoute>
+                  <Confirm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <ProtectedRoute>
+                  <Account />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/account/add"
+              element={
+                <ProtectedRoute>
+                  <Address />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* auth screens */}

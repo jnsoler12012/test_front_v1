@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom"; // ✅ import hook
 import { BaseButtonGreen } from "../../styles/button";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
 
@@ -32,6 +33,15 @@ const CartSummaryWrapper = styled.div`
 `;
 
 const CartSummary = () => {
+  const navigate = useNavigate(); // ✅ React Router navigation hook
+
+
+  const handleCheckout = () => {
+    console.log('entramos');
+    
+    navigate("/checkout"); // ✅ redirect without page reload
+  };
+
   return (
     <CartSummaryWrapper>
       <ul className="summary-list">
@@ -50,7 +60,11 @@ const CartSummary = () => {
           </span>
         </li>
       </ul>
-      <BaseButtonGreen type="submit" className="checkout-btn">
+      <BaseButtonGreen
+        type="button"
+        className="checkout-btn"
+        onClick={handleCheckout}
+      >
         Proceed To Checkout
       </BaseButtonGreen>
     </CartSummaryWrapper>

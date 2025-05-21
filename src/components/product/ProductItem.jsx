@@ -1,8 +1,10 @@
 import { PropTypes } from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { commonCardStyles } from "../../styles/card";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
+import { useDispatch } from "react-redux";
+import { addToWishlist } from "../../redux/slices/wishlistSlice";
 
 const ProductCardWrapper = styled(Link)`
   ${commonCardStyles}
@@ -36,6 +38,26 @@ const ProductCardWrapper = styled(Link)`
 `;
 
 const ProductItem = ({ product }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleAddToWishlist = (e) => {
+    e.preventDefault(); // prevent navigation to /product/details
+
+    dispatch(
+      addToWishlist({
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        color: product.colors?.[0] || "", // or pass full color array if needed
+        quantity: 1,
+        imgSource: product.imgSource,
+      })
+    );
+
+    navigate("/wishlist");
+  };
+
   return (
     <ProductCardWrapper key={product.id} to="/product/details">
       <div className="product-img">
@@ -43,6 +65,7 @@ const ProductItem = ({ product }) => {
         <button
           type="button"
           className="product-wishlist-icon flex items-center justify-center bg-white"
+          onClick={handleAddToWishlist}
         >
           <i className="bi bi-heart"></i>
         </button>

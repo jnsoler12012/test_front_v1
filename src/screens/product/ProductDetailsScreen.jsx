@@ -3,13 +3,17 @@ import { Container } from "../../styles/styles";
 import Breadcrumb from "../../components/common/Breadcrumb";
 import { product_one } from "../../data/data";
 import ProductPreview from "../../components/product/ProductPreview";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BaseLinkGreen } from "../../styles/button";
 import { currencyFormat } from "../../utils/helper";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
 import ProductDescriptionTab from "../../components/product/ProductDescriptionTab";
 import ProductSimilar from "../../components/product/ProductSimilar";
 import ProductServices from "../../components/product/ProductServices";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/slices/cartSlice";
+import { useState } from "react";
+import { addToWishlist } from "../../redux/slices/wishlistSlice";
 
 const DetailsScreenWrapper = styled.main`
   margin: 40px 0;
@@ -182,6 +186,9 @@ const ProductColorWrapper = styled.div`
 `;
 
 const ProductDetailsScreen = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
   const stars = Array.from({ length: 5 }, (_, index) => (
     <span
       key={index}
@@ -201,6 +208,42 @@ const ProductDetailsScreen = () => {
     { label: "Top", link: "" },
   ];
 
+  // NEW: State for selected size and color (default to first available)
+  const [selectedSize, setSelectedSize] = useState(product_one.sizes[0] || "");
+  const [selectedColor, setSelectedColor] = useState(
+    product_one.colors?.[0] || ""
+  );
+
+  // NEW: Handler to add item to cart
+  const handleAddToCart = () => {
+    console.log("add to ccart");
+
+    dispatch(
+      addToCart({
+        id: product_one.id,
+        title: product_one.title,
+        price: product_one.price,
+        size: selectedSize,
+        color: selectedColor,
+        quantity: 1,
+      })
+    );
+    navigate('/cart')
+  };
+
+  const handleAddToWishlist = () => {
+    dispatch(
+      addToWishlist({
+        id: product_one.id,
+        name: product_one.title,
+        price: product_one.price,
+        color: selectedColor,
+        quantity: 1,
+        imgSource: product_one.previewImages?.[0], // first image as preview
+      })
+    );
+    navigate('/wishlist')
+  };
   return (
     <DetailsScreenWrapper>
       <Container>
@@ -213,6 +256,13 @@ const ProductDetailsScreen = () => {
               <div className="prod-rating flex items-center">
                 {stars}
                 <span className="text-gray text-xs">{product_one.rating}</span>
+                <button
+                  type="button"
+                  className="product-wishlist-icon flex items-center justify-center bg-white"
+                  onClick={handleAddToWishlist}
+                >
+                  <i className="bi bi-heart"></i>
+                </button>
               </div>
               <div className="prod-comments flex items-start">
                 <span className="prod-comment-icon text-gray">
@@ -236,7 +286,12 @@ const ProductDetailsScreen = () => {
               <div className="prod-size-list flex items-center">
                 {product_one.sizes.map((size, index) => (
                   <div className="prod-size-item" key={index}>
-                    <input type="radio" name="size" />
+                    <input
+                      type="radio"
+                      name="size"
+                      checked={selectedSize === size}
+                      onChange={() => setSelectedSize(size)} // NEW: hookup here
+                    />
                     <span className="flex items-center justify-center font-medium text-outerspace text-sm">
                       {size}
                     </span>
@@ -253,7 +308,12 @@ const ProductDetailsScreen = () => {
               <div className="prod-colors-list flex items-center">
                 {product_one?.colors?.map((color, index) => (
                   <div className="prod-colors-item" key={index}>
-                    <input type="radio" name="colors" />
+                    <input
+                      type="radio"
+                      name="colors"
+                      checked={selectedColor === color}
+                      onChange={() => setSelectedColor(color)} // NEW: hookup here
+                    />
                     <span
                       className="prod-colorbox"
                       style={{ background: `${color}` }}
@@ -267,6 +327,10 @@ const ProductDetailsScreen = () => {
                 to="/cart"
                 as={BaseLinkGreen}
                 className="prod-add-btn"
+                onClick={(e) => {
+                  e.preventDefault(); // prevent navigation
+                  handleAddToCart();
+                }} // NEW: call handler here
               >
                 <span className="prod-add-btn-icon">
                   <i className="bi bi-cart2"></i>

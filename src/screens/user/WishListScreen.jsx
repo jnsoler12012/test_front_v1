@@ -4,10 +4,11 @@ import Breadcrumb from "../../components/common/Breadcrumb";
 import { UserContent, UserDashboardWrapper } from "../../styles/user";
 import UserMenu from "../../components/user/UserMenu";
 import Title from "../../components/common/Title";
-import { wishlistData } from "../../data/data";
 import { currencyFormat } from "../../utils/helper";
 import { BaseLinkBlack } from "../../styles/button";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromWishlist } from "../../redux/slices/wishlistSlice";
 
 const WishListScreenWrapper = styled.main`
   .wishlist {
@@ -153,6 +154,9 @@ const breadcrumbItems = [
 ];
 
 const WishListScreen = () => {
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+
   return (
     <WishListScreenWrapper className="page-py-spacing">
       <Container>
@@ -162,11 +166,17 @@ const WishListScreen = () => {
           <UserContent>
             <Title titleText={"Wishlist"} />
             <div className="wishlist grid">
-              {wishlistData?.map((wishlist) => {
+              {wishlistItems?.map((wishlist) => {
                 return (
                   <WishItemWrapper className="wish-item flex" key={wishlist.id}>
                     <div className="wish-item-img flex items-stretch">
-                      <button type="button" className="wish-remove-btn">
+                      <button
+                        type="button"
+                        className="wish-remove-btn"
+                        onClick={() =>
+                          dispatch(removeFromWishlist(wishlist.id))
+                        }
+                      >
                         <i className="bi bi-x-lg"></i>
                       </button>
                       <div className="wish-item-img-wrapper">

@@ -26,12 +26,18 @@ const CartTableRowWrapper = styled.tr`
           border-color: ${defaultTheme.color_sea_green};
           background-color: ${defaultTheme.color_sea_green};
           color: ${defaultTheme.color_white};
+          cursor: pointer;
         }
       }
 
       .qty-value {
         width: 40px;
         height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-medium: 500;
+        color: ${defaultTheme.color_outerspace};
       }
     }
   }
@@ -58,57 +64,76 @@ const CartTableRowWrapper = styled.tr`
   }
 `;
 
-const CartItem = ({ cartItem }) => {
+const CartItem = ({ cartItem, onQuantityChange, onRemove }) => {
+  const { id, quantity, price, imgSource, title, color, size, shipping } =
+    cartItem;
+
+  const handleDec = () => {
+    if (quantity > 1) {
+      onQuantityChange(id, quantity - 1);
+    }
+  };
+
+  const handleInc = () => {
+    onQuantityChange(id, quantity + 1);
+  };
+
+  const handleRemove = (e) => {
+    e.preventDefault();
+    onRemove(id);
+  };
+
   return (
-    <CartTableRowWrapper key={cartItem.id}>
+    <CartTableRowWrapper key={id}>
       <td>
         <div className="cart-tbl-prod grid">
           <div className="cart-prod-img">
-            <img src={cartItem.imgSource} className="object-fit-cover" alt="" />
+            <img src={imgSource} className="object-fit-cover" alt="" />
           </div>
           <div className="cart-prod-info">
-            <h4 className="text-base">{cartItem.title}</h4>
+            <h4 className="text-base">{title}</h4>
             <p className="text-sm text-gray inline-flex">
-              <span className="font-semibold">Color: </span> {cartItem.color}
+              <span className="font-semibold">Color: </span> {color}
             </p>
             <p className="text-sm text-gray inline-flex">
-              <span className="font-semibold">Size:</span>
-              {cartItem.size}
+              <span className="font-semibold">Size:</span> {size}
             </p>
           </div>
         </div>
       </td>
       <td>
-        <span className="text-lg font-bold text-outerspace">
-          ${cartItem.price}
-        </span>
+        <span className="text-lg font-bold text-outerspace">${price}</span>
       </td>
       <td>
         <div className="cart-tbl-qty flex items-center">
-          <button className="qty-dec-btn">
+          <button className="qty-dec-btn" onClick={handleDec}>
             <i className="bi bi-dash-lg"></i>
           </button>
           <span className="qty-value inline-flex items-center justify-center font-medium text-outerspace">
-            2
+            {quantity}
           </span>
-          <button className="qty-inc-btn">
+          <button className="qty-inc-btn" onClick={handleInc}>
             <i className="bi bi-plus-lg"></i>
           </button>
         </div>
       </td>
       <td>
         <span className="cart-tbl-shipping uppercase text-silver font-bold">
-          {cartItem.shipping === 0 ? "Free" : cartItem.shipping}
+          {shipping === 0 ? "Free" : shipping}
         </span>
       </td>
       <td>
         <span className="text-lg font-bold text-outerspace">
-          ${cartItem.price * cartItem.quantity}
+          ${(price * quantity).toFixed(2)}
         </span>
       </td>
       <td>
         <div className="cart-tbl-actions flex justify-center">
-          <Link to="/" className="tbl-del-action text-red">
+          <Link
+            to="/"
+            className="tbl-del-action text-red"
+            onClick={handleRemove}
+          >
             <i className="bi bi-trash3"></i>
           </Link>
         </div>
@@ -120,5 +145,7 @@ const CartItem = ({ cartItem }) => {
 export default CartItem;
 
 CartItem.propTypes = {
-  cartItem: PropTypes.object,
+  cartItem: PropTypes.object.isRequired,
+  onQuantityChange: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };
